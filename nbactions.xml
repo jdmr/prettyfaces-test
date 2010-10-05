@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+        <action>
+            <actionName>run</actionName>
+            <goals>
+                <goal>package</goal>
+                <goal>jboss:harddeploy</goal>
+            </goals>
+            <properties>
+                <env.JBOSS_HOME>/usr/local/jboss</env.JBOSS_HOME>
+            </properties>
+        </action>
+        <action>
+            <actionName>rebuild</actionName>
+            <goals>
+                <goal>clean</goal>
+                <goal>package</goal>
+            </goals>
+        </action>
+    </actions>

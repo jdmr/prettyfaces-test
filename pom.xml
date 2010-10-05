@@ -28,6 +28,12 @@
             <version>1.6.1</version>
             <scope>compile</scope>
         </dependency>
+<!--
+        <dependency>
+            <groupId>com.ocpsoft</groupId>
+            <artifactId>prettyfaces-jsf2</artifactId>
+            <version>3.1.1-SNAPSHOT</version>
+        </dependency>-->
 
         <!--
         <dependency>
@@ -51,12 +57,6 @@
             <scope>provided</scope>
         </dependency>
  	-->
-		<!--
-			Default Implementation that carries additional validators. Should be
-			removed in the event of the server using an alternate validations
-			implementation since the proprietary ones in hibernate won't be
-			available anymore
-		-->
 
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -64,6 +64,13 @@
             <version>4.0.0.GA</version>
             <scope>provided</scope>
         </dependency>
+        
+<!--        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>2.1.1</version>
+            <scope>compile</scope>
+        </dependency>-->
 
     </dependencies>
 
@@ -83,6 +90,13 @@
             <name>JBoss Repository</name>
             <url>http://repository.jboss.org/maven2/</url>
         </repository>
+        
+        <repository>
+            <id>ocpsoft.com</id>
+            <name>OCPSoft Repo</name>
+            <url>http://ocpsoft.com/repository/</url>
+        </repository>
+        
     </repositories>
 
     <build>

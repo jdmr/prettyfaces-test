@@ -10,9 +10,15 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.transaction.UserTransaction;
+import mx.edu.um.mateo.auditable.general.XEmpresa;
+import mx.edu.um.mateo.auditable.general.XOrganizacion;
+import mx.edu.um.mateo.auditable.general.XUsuario;
 import mx.edu.um.mateo.general.modelo.Empresa;
 import mx.edu.um.mateo.general.modelo.Organizacion;
 import mx.edu.um.mateo.general.modelo.Rol;
+import mx.edu.um.mateo.general.modelo.Usuario;
+import mx.edu.um.mateo.general.util.Constantes;
+import mx.edu.um.mateo.general.util.UsuarioUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,13 +42,35 @@ public class InicializaAplicacion {
     @PostConstruct
     public void init() {
         log.info("Inicializando Aplicacion");
+        Query query;
+        Organizacion organizacion = null;
+        Empresa empresa = null;
         try {
             utx.begin();
+            log.debug("Validando las organizaciones");
+            query = entityManager.createNamedQuery("Organizacion.buscaTodos");
+            query.setMaxResults(1);
+            List organizaciones =  query.getResultList();
+            if (organizaciones == null || organizaciones.isEmpty()) {
+                organizacion = new Organizacion("UM","UM","Universidad de Montemorelos, A.C.","UMO8409105C4",null);
+                empresa = new Empresa("EMP", "EMPRESA", "EMPRESA", "UMO8409105C4", null, organizacion);
+                organizacion.addToEmpresas(empresa);
+                entityManager.persist(organizacion);
+                // Historial
+                XEmpresa xempresa = new XEmpresa(empresa, Constantes.CREAR, "admin");
+                entityManager.persist(xempresa);
+                XOrganizacion xorganizacion = new XOrganizacion(organizacion, Constantes.CREAR, "admin");
+                entityManager.persist(xorganizacion);
+            } else {
+                organizacion = (Organizacion)organizaciones.get(0);
+                empresa = organizacion.getEmpresas().get(0);
+            }
+            
             log.debug("Validando los roles");
             Rol rolAdmin;
-            Query query = entityManager.createNamedQuery("Rol.buscaTodos");
+            query = entityManager.createNamedQuery("Rol.buscaTodos");
             List roles = query.getResultList();
-            if (roles == null || roles.isEmpty() || roles.size() != 4) {
+            if (roles == null || roles.isEmpty()) {
                 log.debug("Creando los roles");
                 rolAdmin = new Rol("ROLE_ADMIN");
                 Rol rolOrg = new Rol("ROLE_ORG");
@@ -52,6 +80,11 @@ public class InicializaAplicacion {
                 entityManager.persist(rolOrg);
                 entityManager.persist(rolEmp);
                 entityManager.persist(rolUser);
+                roles.clear();
+                roles.add(rolAdmin);
+                roles.add(rolOrg);
+                roles.add(rolEmp);
+                roles.add(rolUser);
             } else {
                 query = entityManager.createNamedQuery("Rol.buscaPorAutoridad");
                 query.setParameter("autoridad", "ROLE_ADMIN");
@@ -61,19 +94,24 @@ public class InicializaAplicacion {
             log.debug("Validando los usuarios");
             query = entityManager.createNamedQuery("Usuario.buscaPorRol");
             query.setParameter("rol", rolAdmin);
-
-
-            log.debug("Validando las organizaciones");
-            query = entityManager.createNamedQuery("Organizacion.buscaTodos");
-            query.setMaxResults(1);
-            List organizaciones =  query.getResultList();
-            if (organizaciones == null || organizaciones.isEmpty()) {
-                Organizacion organizacion = new Organizacion("UM","UM","Universidad de Montemorelos, A.C.","UMO8409105C4",null);
-                Empresa empresa = new Empresa("EMP", "EMPRESA", "EMPRESA", "UMO8409105C4", null, organizacion);
-                entityManager.persist(empresa);
+            List usuarios = query.getResultList();
+            if (usuarios == null || usuarios.isEmpty()) {
+                log.debug("Creando usuario administrador");
+                Usuario usuario = new Usuario("admin", UsuarioUtil.encriptaLlave("admin"), "David", "Mendoza", "david.mendoza@um.edu.mx", roles, empresa);
+                entityManager.persist(usuario);
+                entityManager.persist(new XUsuario(usuario,Constantes.CREAR,"admin"));
+                
+                log.debug("Agregando usuario a la empresa");
+                empresa.addToUsuarios(usuario);
+                //entityManager.persist(empresa);
+                log.debug("Agregando usuario a la organizacion");
+                organizacion.addToUsuarios(usuario);
+                entityManager.persist(organizacion);
             }
+
             utx.commit();
         } catch(Exception e) {
+            log.error("Hubo un problema al iniciar la aplicacion",e);
             try {
                 utx.rollback();
             } catch (Exception ex) {

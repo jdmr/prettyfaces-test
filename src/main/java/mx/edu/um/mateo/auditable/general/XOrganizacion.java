@@ -1,39 +1,25 @@
-package mx.edu.um.mateo.general.modelo;
+package mx.edu.um.mateo.auditable.general;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-import javax.validation.constraints.Size;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import mx.edu.um.mateo.general.modelo.Organizacion;
 
 /**
  *
  * @author jdmr
  */
 @Entity
-@Table(name = "organizaciones", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"nombre"}),
-    @UniqueConstraint(columnNames = {"codigo"})})
-@NamedQueries({
-    @NamedQuery(name = "Organizacion.buscaTodos", query = "SELECT o FROM Organizacion o"),
-    @NamedQuery(name = "Organizacion.buscaPorCodigo", query = "SELECT o FROM Organizacion o WHERE o.codigo = :codigo"),
-    @NamedQuery(name = "Organizacion.buscaPorNombre", query = "SELECT o FROM Organizacion o WHERE o.nombre = :nombre"),
-    @NamedQuery(name = "Organizacion.buscaPorRfc", query = "SELECT o FROM Organizacion o WHERE o.rfc = :rfc")})
-public class Organizacion implements Serializable {
+@Table(name = "xorganizaciones")
+public class XOrganizacion implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,6 +29,9 @@ public class Organizacion implements Serializable {
     @Basic(optional = false)
     @Column(name = "version", nullable = false)
     private long version;
+    @Basic(optional = false)
+    @Column(name = "organizacion_id", nullable = false)
+    private long organizacionId;
     @Basic(optional = false)
     @Column(name = "codigo", nullable = false, length = 6)
     private String codigo;
@@ -54,31 +43,39 @@ public class Organizacion implements Serializable {
     private String nombreCompleto;
     @Basic(optional = false)
     @Column(name = "rfc", nullable = false, length = 13)
-    @Size(min=12,max=13)
     private String rfc;
     @Column(name = "curp", length = 18)
     private String curp;
-    @JoinTable(name = "organizaciones_usuarios", joinColumns = {
-        @JoinColumn(name = "organizacion_id", referencedColumnName = "id", nullable = false)}, inverseJoinColumns = {
-        @JoinColumn(name = "usuario_id", referencedColumnName = "id", nullable = false)})
-    @ManyToMany(cascade=CascadeType.ALL)
-    private List<Usuario> usuarios = new ArrayList<Usuario>();
-    @OneToMany(cascade=CascadeType.ALL, mappedBy="organizacion")
-    private List<Empresa> empresas = new ArrayList<Empresa>();
+    @Basic(optional = false)
+    @Column(name = "date_created", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateCreated;
+    @Basic(optional = false)
+    @Column(name = "last_updated", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastUpdated;
+    @Basic(optional = false)
+    @Column(name = "actividad", nullable = false, length = 32)
+    private String actividad;
+    @Basic(optional = false)
+    @Column(name = "creador", nullable = false, length = 64)
+    private String creador;
 
-    public Organizacion() {
+    public XOrganizacion() {
     }
 
-    public Organizacion(Long id) {
-        this.id = id;
-    }
-
-    public Organizacion(String codigo, String nombre, String nombreCompleto, String rfc, String curp) {
-        this.codigo = codigo;
-        this.nombre = nombre;
-        this.nombreCompleto = nombreCompleto;
-        this.rfc = rfc;
-        this.curp = curp;
+    public XOrganizacion(Organizacion organizacion, String actividad, String creador) {
+        this.organizacionId = organizacion.getId();
+        this.codigo = organizacion.getCodigo();
+        this.nombre = organizacion.getNombre();
+        this.nombreCompleto = organizacion.getNombreCompleto();
+        this.rfc = organizacion.getRfc();
+        this.curp = organizacion.getCurp();
+        Date date = new Date();
+        this.dateCreated = date;
+        this.lastUpdated = date;
+        this.actividad = actividad;
+        this.creador = creador;
     }
 
     /**
@@ -180,42 +177,73 @@ public class Organizacion implements Serializable {
     }
 
     /**
-     * @return the usuarios
+     * @return the dateCreated
      */
-    public List<Usuario> getUsuarios() {
-        return usuarios;
+    public Date getDateCreated() {
+        return dateCreated;
     }
 
     /**
-     * @param usuarios the usuarios to set
+     * @param dateCreated the dateCreated to set
      */
-    public void setUsuarios(List<Usuario> usuarios) {
-        this.usuarios = usuarios;
-    }
-
-    public void addToUsuarios(Usuario usuario) {
-        this.usuarios.add(usuario);
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
     }
 
     /**
-     * @return the empresas
+     * @return the lastUpdated
      */
-    public List<Empresa> getEmpresas() {
-        return empresas;
+    public Date getLastUpdated() {
+        return lastUpdated;
     }
 
     /**
-     * @param empresas the empresas to set
+     * @param lastUpdated the lastUpdated to set
      */
-    public void setEmpresas(List<Empresa> empresas) {
-        this.empresas = empresas;
+    public void setLastUpdated(Date lastUpdated) {
+        this.lastUpdated = lastUpdated;
     }
+
     /**
-     * Asigna empresa a esta organizacion
-     * @param empresa
+     * @return the organizacionId
      */
-    public void addToEmpresas(Empresa empresa) {
-        this.empresas.add(empresa);
+    public long getOrganizacionId() {
+        return organizacionId;
+    }
+
+    /**
+     * @param organizacionId the organizacionId to set
+     */
+    public void setOrganizacionId(long organizacionId) {
+        this.organizacionId = organizacionId;
+    }
+
+    /**
+     * @return the actividad
+     */
+    public String getActividad() {
+        return actividad;
+    }
+
+    /**
+     * @param actividad the actividad to set
+     */
+    public void setActividad(String actividad) {
+        this.actividad = actividad;
+    }
+
+    /**
+     * @return the creador
+     */
+    public String getCreador() {
+        return creador;
+    }
+
+    /**
+     * @param creador the creador to set
+     */
+    public void setCreador(String creador) {
+        this.creador = creador;
     }
 
     @Override
@@ -227,10 +255,11 @@ public class Organizacion implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof Organizacion)) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof XOrganizacion)) {
             return false;
         }
-        Organizacion other = (Organizacion) object;
+        XOrganizacion other = (XOrganizacion) object;
         if ((this.getId() == null && other.getId() != null) || (this.getId() != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -239,7 +268,7 @@ public class Organizacion implements Serializable {
 
     @Override
     public String toString() {
-        return "mx.edu.um.mateo.modelo.Organizacion[id=" + getId() + "]";
+        return "mx.edu.um.mateo.modelo.XOrganizacion[id=" + getId() + "]";
     }
 
 }

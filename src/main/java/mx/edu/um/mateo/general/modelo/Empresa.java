@@ -1,6 +1,7 @@
 package mx.edu.um.mateo.general.modelo;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -55,13 +56,13 @@ public class Empresa implements Serializable {
     private String rfc;
     @Column(name = "curp", length = 18)
     private String curp;
-    @ManyToOne(optional = false, cascade=CascadeType.PERSIST)
+    @ManyToOne(optional = false)
     private Organizacion organizacion;
     @JoinTable(name = "empresas_usuarios", joinColumns = {
         @JoinColumn(name = "empresa_usuarios_id", referencedColumnName = "id")}, inverseJoinColumns = {
         @JoinColumn(name = "usuario_id", referencedColumnName = "id")})
     @ManyToMany
-    private List<Usuario> usuarios;
+    private List<Usuario> usuarios = new ArrayList<Usuario>();
 
     public Empresa() {
     }
@@ -203,6 +204,10 @@ public class Empresa implements Serializable {
      */
     public void setUsuarios(List<Usuario> usuarios) {
         this.usuarios = usuarios;
+    }
+    
+    public void addToUsuarios(Usuario usuario) {
+        this.usuarios.add(usuario);
     }
 
     @Override

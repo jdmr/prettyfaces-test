@@ -1,6 +1,7 @@
 package mx.edu.um.mateo.general.modelo;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -8,8 +9,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -39,11 +38,8 @@ public class Rol implements Serializable {
     @Basic(optional = false)
     @Column(name = "autoridad", nullable = false, length = 32)
     private String autoridad;
-    @JoinTable(name = "usuario_rol", joinColumns = {
-        @JoinColumn(name = "rol_id", referencedColumnName = "id", nullable = false)}, inverseJoinColumns = {
-        @JoinColumn(name = "usuario_id", referencedColumnName = "id", nullable = false)})
-    @ManyToMany
-    private List<Usuario> usuarios;
+    @ManyToMany(mappedBy="roles")
+    private List<Usuario> usuarios = new ArrayList<Usuario>();
 
     public Rol() {
     }

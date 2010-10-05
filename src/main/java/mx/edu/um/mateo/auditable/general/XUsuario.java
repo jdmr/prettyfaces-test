@@ -1,40 +1,24 @@
-package mx.edu.um.mateo.general.modelo;
+package mx.edu.um.mateo.auditable.general;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.Temporal;
+import mx.edu.um.mateo.general.modelo.Usuario;
 
 /**
  *
  * @author jdmr
  */
 @Entity
-@Table(name = "usuarios", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"clave"})})
-@NamedQueries({
-    @NamedQuery(name = "Usuario.buscaTodos", query = "SELECT u FROM Usuario u"),
-    @NamedQuery(name = "Usuario.buscaPorApellido", query = "SELECT u FROM Usuario u WHERE u.apellido = :apellido"),
-    @NamedQuery(name = "Usuario.buscaPorNombre", query = "SELECT u FROM Usuario u WHERE u.nombre = :nombre"),
-    @NamedQuery(name = "Usuario.buscaPorCorreo", query = "SELECT u FROM Usuario u WHERE u.correo = :correo"),
-    @NamedQuery(name = "Usuario.buscaPorClave", query = "SELECT u FROM Usuario u WHERE u.clave = :clave"),
-    @NamedQuery(name = "Usuario.buscaPorRol", query = "SELECT u FROM Usuario u left join u.roles rol WHERE rol = :rol")
-})
-public class Usuario implements Serializable {
-
+@Table(name = "xusuarios")
+public class XUsuario implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,6 +28,9 @@ public class Usuario implements Serializable {
     @Basic(optional = false)
     @Column(name = "version", nullable = false)
     private long version;
+    @Basic(optional = false)
+    @Column(name = "usuario_id", nullable = false)
+    private Long usuarioId;
     @Basic(optional = false)
     @Column(name = "clave", nullable = false, length = 64)
     private String clave;
@@ -58,29 +45,34 @@ public class Usuario implements Serializable {
     private String apellido;
     @Column(name = "correo", length = 128)
     private String correo;
-    @JoinTable(name = "usuario_rol", joinColumns = {
-        @JoinColumn(name = "usuario_id", referencedColumnName = "id", nullable = false)}, inverseJoinColumns = {
-        @JoinColumn(name = "rol_id", referencedColumnName = "id", nullable = false)})
-    @ManyToMany
-    private List<Rol> roles = new ArrayList<Rol>();
-    @ManyToOne(optional = false)
-    private Empresa empresa;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    @Column(name = "date_created")
+    private Date dateCreated;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    @Column(name = "last_updated")
+    private Date lastUpdated;
+    @Basic(optional = false)
+    @Column(name = "actividad", nullable = false, length = 64)
+    private String actividad;
+    @Basic(optional = false)
+    @Column(name = "creador", nullable = false, length = 64)
+    private String creador;
 
-    public Usuario() {
+    public XUsuario() {
     }
 
-    public Usuario(Long id) {
-        this.id = id;
-    }
-
-    public Usuario(String clave, String llave, String nombre, String apellido, String correo, List<Rol> roles, Empresa empresa) {
-        this.clave = clave;
-        this.llave = llave;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.correo = correo;
-        this.roles = roles;
-        this.empresa = empresa;
+    public XUsuario(Usuario usuario, String actividad, String creador) {
+        this.usuarioId = usuario.getId();
+        this.clave = usuario.getClave();
+        this.llave = usuario.getLlave();
+        this.nombre = usuario.getNombre();
+        this.apellido = usuario.getApellido();
+        this.correo = usuario.getCorreo();
+        Date date = new Date();
+        this.dateCreated = date;
+        this.lastUpdated = date;
+        this.actividad = actividad;
+        this.creador = creador;
     }
 
     /**
@@ -109,6 +101,20 @@ public class Usuario implements Serializable {
      */
     public void setVersion(long version) {
         this.version = version;
+    }
+
+    /**
+     * @return the usuarioId
+     */
+    public Long getUsuarioId() {
+        return usuarioId;
+    }
+
+    /**
+     * @param usuarioId the usuarioId to set
+     */
+    public void setUsuarioId(Long usuarioId) {
+        this.usuarioId = usuarioId;
     }
 
     /**
@@ -182,31 +188,59 @@ public class Usuario implements Serializable {
     }
 
     /**
-     * @return the roles
+     * @return the dateCreated
      */
-    public List<Rol> getRoles() {
-        return roles;
+    public Date getDateCreated() {
+        return dateCreated;
     }
 
     /**
-     * @param roles the roles to set
+     * @param dateCreated the dateCreated to set
      */
-    public void setRoles(List<Rol> roles) {
-        this.roles = roles;
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
     }
 
     /**
-     * @return the empresa
+     * @return the lastUpdated
      */
-    public Empresa getEmpresa() {
-        return empresa;
+    public Date getLastUpdated() {
+        return lastUpdated;
     }
 
     /**
-     * @param empresa the empresa to set
+     * @param lastUpdated the lastUpdated to set
      */
-    public void setEmpresa(Empresa empresa) {
-        this.empresa = empresa;
+    public void setLastUpdated(Date lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
+    /**
+     * @return the actividad
+     */
+    public String getActividad() {
+        return actividad;
+    }
+
+    /**
+     * @param actividad the actividad to set
+     */
+    public void setActividad(String actividad) {
+        this.actividad = actividad;
+    }
+
+    /**
+     * @return the creador
+     */
+    public String getCreador() {
+        return creador;
+    }
+
+    /**
+     * @param creador the creador to set
+     */
+    public void setCreador(String creador) {
+        this.creador = creador;
     }
 
     @Override
@@ -218,10 +252,11 @@ public class Usuario implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof Usuario)) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof XUsuario)) {
             return false;
         }
-        Usuario other = (Usuario) object;
+        XUsuario other = (XUsuario) object;
         if ((this.getId() == null && other.getId() != null) || (this.getId() != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -230,6 +265,7 @@ public class Usuario implements Serializable {
 
     @Override
     public String toString() {
-        return getApellido() + ", " + getNombre();
+        return "mx.edu.um.mateo.modelo.XUsuario[id=" + getId() + "]";
     }
+
 }
