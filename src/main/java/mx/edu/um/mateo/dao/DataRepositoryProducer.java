@@ -1,4 +1,4 @@
-package mx.edu.um.mateo;
+package mx.edu.um.mateo.dao;
 
 import javax.ejb.Stateless;
 import javax.enterprise.context.ConversationScoped;

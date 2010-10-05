@@ -1,4 +1,4 @@
-package mx.edu.um.mateo;
+package mx.edu.um.mateo.dao;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

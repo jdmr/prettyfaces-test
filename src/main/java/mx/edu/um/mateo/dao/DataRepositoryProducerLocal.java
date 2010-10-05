@@ -1,4 +1,4 @@
-package mx.edu.um.mateo;
+package mx.edu.um.mateo.dao;
 
 import javax.ejb.Local;
 import javax.persistence.EntityManager;

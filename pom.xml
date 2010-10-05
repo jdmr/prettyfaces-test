@@ -22,21 +22,35 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.6.1</version>
+            <scope>compile</scope>
+        </dependency>
 
-		<!--
-			Used for app servers that do not contain slf4j (i.e. Default
-			Glassfish Install)
-		-->
-		<!-- 
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-jdk14</artifactId>
-			<version>1.5.8</version>
-			<scope>compile</scope>
-		</dependency>
- 		-->
+        <!--
+        <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-core</artifactId>
+            <version>1.0.1-Final</version>
+            <scope>provided</scope>
+        </dependency>
 
+        <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-extensions</artifactId>
+            <version>1.0.0.Alpha2</version>
+            <scope>provided</scope>
+        </dependency>
 
+        <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-logging</artifactId>
+            <version>1.0.0-CR1-SP1</version>
+            <scope>provided</scope>
+        </dependency>
+ 	-->
 		<!--
 			Default Implementation that carries additional validators. Should be
 			removed in the event of the server using an alternate validations
