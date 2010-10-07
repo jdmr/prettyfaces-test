@@ -28,12 +28,12 @@
             <version>1.6.1</version>
             <scope>compile</scope>
         </dependency>
-<!--
+        
         <dependency>
             <groupId>com.ocpsoft</groupId>
             <artifactId>prettyfaces-jsf2</artifactId>
-            <version>3.1.1-SNAPSHOT</version>
-        </dependency>-->
+            <version>3.1.0</version>
+        </dependency>
 
         <!--
         <dependency>
@@ -65,12 +65,12 @@
             <scope>provided</scope>
         </dependency>
         
-<!--        <dependency>
+        <dependency>
             <groupId>commons-collections</groupId>
             <artifactId>commons-collections</artifactId>
             <version>2.1.1</version>
             <scope>compile</scope>
-        </dependency>-->
+        </dependency>
 
     </dependencies>
 

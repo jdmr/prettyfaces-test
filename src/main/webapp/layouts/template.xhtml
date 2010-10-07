@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      >
+
+    <!-- Enables CTRL+SHIFT+D for activating Facelets debug window -->
+    <ui:debug />
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>MATEO | <ui:insert name="title"/></title>
+        <link href="#{facesContext.externalContext.requestContextPath}/styles/main.css" rel="stylesheet" type="text/css" />
+        <link rel="shortcut icon" href="#{facesContext.externalContext.requestContextPath}/images/favicon.ico" type="image/x-icon" />
+    </h:head>
+
+    <h:body>
+
+        <div id="header">
+            <h:form>
+                <h1><h:commandLink action="/index" value="MATEO" style="color:white;font-weight: normal;" /></h1>
+                <div id="status">
+                    <h:commandLink action="#{gedeonController.logout}" disabled="#{gedeonController.usuarioNoFirmado}" style="color:white;font-weight:normal;">Bienvenido(a) <h:outputText value="#{gedeonController.claveDeUsuarioFirmado}"/></h:commandLink><br/>
+                    <h:commandLink action="#{gedeonController.logout}" disabled="#{gedeonController.usuarioNoFirmado}" style="color:white;font-weight:normal;">Salir</h:commandLink>
+                </div>
+            </h:form>
+        </div>
+
+        <div id="nav" class="nav">
+            <ui:insert name="nav">Navegacion</ui:insert>
+        </div>
+
+        <div id="body" class="body">
+            <ui:insert name="body">Contenido</ui:insert>
+        </div>
+
+        <div id="footer">
+            <span class="copyright">
+                &copy; 2010 Proyecto GEDEÓN<br />
+                Universidad de Montemorelos, A.C.
+            </span>
+        </div>
+
+    </h:body>
+
+</html>

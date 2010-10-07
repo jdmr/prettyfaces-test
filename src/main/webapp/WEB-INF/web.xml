@@ -12,6 +12,19 @@
         <param-name>facelets.DEVELOPMENT</param-name>
         <param-value>true</param-value>
     </context-param>
+    <filter> 
+        <filter-name>Pretty Filter</filter-name> 
+        <filter-class>com.ocpsoft.pretty.PrettyFilter</filter-class> 
+        <async-supported>true</async-supported> 
+    </filter> 
+    <filter-mapping> 
+        <filter-name>Pretty Filter</filter-name> 
+        <url-pattern>/*</url-pattern> 
+        <dispatcher>FORWARD</dispatcher> 
+        <dispatcher>REQUEST</dispatcher> 
+        <dispatcher>ASYNC</dispatcher> 
+        <dispatcher>ERROR</dispatcher> 
+    </filter-mapping>
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>
         <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
